@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stride & Co — Shoe Sale Offer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#2B1D14;
+    --paper:#F3EBDD;
+    --teal:#8C3B1F;
+    --gold:#D8A13B;
+    --gold-deep:#B5791F;
+    --line: rgba(43,29,20,0.14);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .card{
+    max-width:560px;
+    width:100%;
+    text-align:center;
+    padding:64px 40px;
+    border:1px solid var(--line);
+    background:
+      radial-gradient(circle at 15% 15%, rgba(224,165,72,0.10), transparent 45%),
+      #fff;
+    position:relative;
+  }
+  .eyebrow{
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--teal);
+    font-weight:600;
+    margin-bottom:18px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:clamp(30px, 5vw, 42px);
+    line-height:1.15;
+    margin-bottom:16px;
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--gold-deep);
+  }
+  p.sub{
+    color:rgba(19,42,46,0.72);
+    font-size:16px;
+    line-height:1.6;
+    max-width:420px;
+    margin:0 auto 36px;
+  }
+  .offer-btn{
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    letter-spacing:0.02em;
+    color:#fff;
+    background:var(--teal);
+    border:none;
+    padding:16px 34px;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.15s ease;
+  }
+  .offer-btn:hover{ background:#164541; transform:translateY(-1px); }
+  .offer-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+ 
+  /* Overlay */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(19,42,46,0.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+  }
+  .overlay.open{ display:flex; }
+ 
+  .modal{
+    background:#fff;
+    max-width:420px;
+    width:100%;
+    position:relative;
+    border-top:5px solid var(--gold);
+    box-shadow:0 30px 60px rgba(19,42,46,0.35);
+    animation:rise 0.25s ease;
+  }
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(14px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .close-btn{
+    position:absolute;
+    top:14px; right:14px;
+    width:32px; height:32px;
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:50%;
+    font-size:16px;
+    line-height:1;
+    color:var(--ink);
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .close-btn:hover{ background:var(--paper); }
+ 
+  .modal-body{ padding:40px 32px 32px; text-align:center; }
+  .shoe-art{
+    width:100%;
+    max-width:260px;
+    margin:0 auto 20px;
+    display:block;
+  }
+  .badge{
+    display:inline-block;
+    font-size:11px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-weight:700;
+    color:#fff;
+    background:var(--gold-deep);
+    padding:6px 12px;
+    margin-bottom:18px;
+  }
+  .modal h2{
+    font-family:'Fraunces', serif;
+    font-size:24px;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .modal .package-name{
+    font-size:13px;
+    color:var(--teal);
+    font-weight:600;
+    margin-bottom:20px;
+  }
+  .price{
+    font-family:'Fraunces', serif;
+    font-size:44px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:2px;
+  }
+  .price span{
+    font-size:15px;
+    font-family:'Inter', sans-serif;
+    font-weight:500;
+    color:rgba(19,42,46,0.55);
+  }
+  .strike{
+    text-decoration:line-through;
+    color:rgba(19,42,46,0.4);
+    font-size:15px;
+    margin-bottom:22px;
+  }
+  ul.features{
+    list-style:none;
+    text-align:left;
+    margin:0 0 28px;
+    padding:0;
+    border-top:1px solid var(--line);
+    padding-top:20px;
+  }
+  ul.features li{
+    font-size:14px;
+    padding:7px 0;
+    display:flex;
+    gap:10px;
+  }
+  ul.features li::before{
+    content:"✓";
+    color:var(--teal);
+    font-weight:700;
+  }
+  .claim-btn{
+    width:100%;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    color:#fff;
+    background:var(--gold-deep);
+    border:none;
+    padding:15px;
+    cursor:pointer;
+  }
+  .claim-btn:hover{ background:#a86f21; }
+  .fine{
+    font-size:12px;
+    color:rgba(19,42,46,0.5);
+    margin-top:14px;
+  }
+</style>
+</head>
+<body>
+ 
+  <div class="card">
+    <div class="eyebrow">Stride & Co.</div>
+    <h1>Shoes built for <em>every mile</em></h1>
+    <p class="sub">Running, casual, and everyday sneakers — crafted for comfort and made to last. Check out this week's featured deal.</p>
+    <button class="offer-btn" id="offerBtn">Click here for offer</button>
+  </div>
+ 
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
+      <div class="modal-body">
+        <img class="shoe-art" src="images/42-best-asics-running-shoes-15275081-main.webp" alt="Running shoes lineup" style="border-radius:6px; object-fit:cover; height:160px;">
+        <span class="badge">Weekend sale</span>
+        <h2>Running Sneaker Bundle</h2>
+        <div class="package-name">Trail Runner + 2 Pairs of Sport Socks</div>
+        <div class="price">$59<span>/pair</span></div>
+        <div class="strike">$99/pair</div>
+        <ul class="features">
+          <li>Breathable mesh upper, lightweight sole</li>
+          <li>Free pair of performance socks included</li>
+          <li>Available in 6 colors, sizes 5–13</li>
+          <li>Free shipping &amp; 30-day returns</li>
+          <li>Limited stock — while sizes last</li>
+        </ul>
+        <button class="claim-btn">Claim this offer</button>
+        <div class="fine">Offer ends Sunday midnight.</div>
+      </div>
+    </div>
+  </div>
+ 
+<script>
+  const overlay = document.getElementById('overlay');
+  const openBtn = document.getElementById('offerBtn');
+  const closeBtn = document.getElementById('closeBtn');
+ 
+  function openModal(){
+    overlay.classList.add('open');
+    document.addEventListener('keydown', onKeydown);
+  }
+  function closeModal(){
+    overlay.classList.remove('open');
+    document.removeEventListener('keydown', onKeydown);
+  }
+  function onKeydown(e){
+    if(e.key === 'Escape') closeModal();
+  }
+ 
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => {
+    if(e.target === overlay) closeModal();
+  });
+</script>
+ 
+</body>
+</html>
+ 
