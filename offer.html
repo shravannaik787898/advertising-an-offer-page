@@ -1,266 +1,559 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stride & Co — Shoe Sale Offer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{
-    --ink:#2B1D14;
-    --paper:#F3EBDD;
-    --teal:#8C3B1F;
-    --gold:#D8A13B;
-    --gold-deep:#B5791F;
-    --line: rgba(43,29,20,0.14);
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Inter', sans-serif;
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-  }
-  .card{
-    max-width:560px;
-    width:100%;
-    text-align:center;
-    padding:64px 40px;
-    border:1px solid var(--line);
-    background:
-      radial-gradient(circle at 15% 15%, rgba(224,165,72,0.10), transparent 45%),
-      #fff;
-    position:relative;
-  }
-  .eyebrow{
-    font-size:12px;
-    letter-spacing:0.18em;
-    text-transform:uppercase;
-    color:var(--teal);
-    font-weight:600;
-    margin-bottom:18px;
-  }
-  h1{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:clamp(30px, 5vw, 42px);
-    line-height:1.15;
-    margin-bottom:16px;
-  }
-  h1 em{
-    font-style:italic;
-    color:var(--gold-deep);
-  }
-  p.sub{
-    color:rgba(19,42,46,0.72);
-    font-size:16px;
-    line-height:1.6;
-    max-width:420px;
-    margin:0 auto 36px;
-  }
-  .offer-btn{
-    font-family:'Inter', sans-serif;
-    font-weight:600;
-    font-size:15px;
-    letter-spacing:0.02em;
-    color:#fff;
-    background:var(--teal);
-    border:none;
-    padding:16px 34px;
-    cursor:pointer;
-    transition:background 0.2s ease, transform 0.15s ease;
-  }
-  .offer-btn:hover{ background:#164541; transform:translateY(-1px); }
-  .offer-btn:focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
- 
-  /* Overlay */
-  .overlay{
-    position:fixed; inset:0;
-    background:rgba(19,42,46,0.55);
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    z-index:100;
-  }
-  .overlay.open{ display:flex; }
- 
-  .modal{
-    background:#fff;
-    max-width:420px;
-    width:100%;
-    position:relative;
-    border-top:5px solid var(--gold);
-    box-shadow:0 30px 60px rgba(19,42,46,0.35);
-    animation:rise 0.25s ease;
-  }
-  @keyframes rise{
-    from{ opacity:0; transform:translateY(14px); }
-    to{ opacity:1; transform:translateY(0); }
-  }
-  .close-btn{
-    position:absolute;
-    top:14px; right:14px;
-    width:32px; height:32px;
-    border:1px solid var(--line);
-    background:#fff;
-    border-radius:50%;
-    font-size:16px;
-    line-height:1;
-    color:var(--ink);
-    cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .close-btn:hover{ background:var(--paper); }
- 
-  .modal-body{ padding:40px 32px 32px; text-align:center; }
-  .shoe-art{
-    width:100%;
-    max-width:260px;
-    margin:0 auto 20px;
-    display:block;
-  }
-  .badge{
-    display:inline-block;
-    font-size:11px;
-    letter-spacing:0.14em;
-    text-transform:uppercase;
-    font-weight:700;
-    color:#fff;
-    background:var(--gold-deep);
-    padding:6px 12px;
-    margin-bottom:18px;
-  }
-  .modal h2{
-    font-family:'Fraunces', serif;
-    font-size:24px;
-    font-weight:600;
-    margin-bottom:6px;
-  }
-  .modal .package-name{
-    font-size:13px;
-    color:var(--teal);
-    font-weight:600;
-    margin-bottom:20px;
-  }
-  .price{
-    font-family:'Fraunces', serif;
-    font-size:44px;
-    font-weight:600;
-    color:var(--ink);
-    margin-bottom:2px;
-  }
-  .price span{
-    font-size:15px;
-    font-family:'Inter', sans-serif;
-    font-weight:500;
-    color:rgba(19,42,46,0.55);
-  }
-  .strike{
-    text-decoration:line-through;
-    color:rgba(19,42,46,0.4);
-    font-size:15px;
-    margin-bottom:22px;
-  }
-  ul.features{
-    list-style:none;
-    text-align:left;
-    margin:0 0 28px;
-    padding:0;
-    border-top:1px solid var(--line);
-    padding-top:20px;
-  }
-  ul.features li{
-    font-size:14px;
-    padding:7px 0;
-    display:flex;
-    gap:10px;
-  }
-  ul.features li::before{
-    content:"✓";
-    color:var(--teal);
-    font-weight:700;
-  }
-  .claim-btn{
-    width:100%;
-    font-family:'Inter', sans-serif;
-    font-weight:600;
-    font-size:15px;
-    color:#fff;
-    background:var(--gold-deep);
-    border:none;
-    padding:15px;
-    cursor:pointer;
-  }
-  .claim-btn:hover{ background:#a86f21; }
-  .fine{
-    font-size:12px;
-    color:rgba(19,42,46,0.5);
-    margin-top:14px;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanctify Athletics - High-Performance Running Shoes</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Teko:wght@600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* ==========================================================================
+           ATHLETIC SPEED DESIGN SYSTEM & CUSTOM CSS
+           ========================================================================== */
+        :root {
+            --bg-dark: #0b0f19;
+            --bg-card: #151d30;
+            --accent-cyan: #00f0ff;
+            --accent-orange: #ff5500;
+            --accent-blue: #0066ff;
+            --text-main: #f8fafc;
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 85, 0, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(15, 23, 42, 0.9) 0%, #070a10 100%);
+            background-attachment: fixed;
+        }
+
+        .heading-font {
+            font-family: 'Teko', sans-serif;
+            letter-spacing: 0.05em;
+        }
+
+        /* Ambient Speed Lines Background */
+        .speed-grid {
+            position: fixed;
+            inset: 0;
+            background-size: 60px 60px;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Glassmorphism Card Style */
+        .glass-card {
+            background: rgba(21, 29, 48, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            transition: all 0.35s var(--ease-smooth);
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 240, 255, 0.3);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 240, 255, 0.15);
+        }
+
+        /* Modal Backdrop & Outer Animation */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 8, 16, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s var(--ease-smooth);
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Animated Split Card Container */
+        .modal-card-wrapper {
+            position: relative;
+            max-width: 920px;
+            width: 100%;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.9), 0 0 50px rgba(0, 240, 255, 0.2);
+            transform: scale(0.9) translateY(40px);
+            transition: transform 0.45s var(--ease-out-back);
+        }
+
+        .modal-overlay.active .modal-card-wrapper {
+            transform: scale(1) translateY(0);
+        }
+
+        /* Glowing Gradient Border Effect for Button */
+        .btn-gradient {
+            background: linear-gradient(135deg, #00f0ff 0%, #0066ff 50%, #ff5500 100%);
+            background-size: 200% 200%;
+            animation: gradientShift 4s ease infinite;
+            transition: all 0.3s var(--ease-smooth);
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0, 240, 255, 0.4);
+        }
+
+        /* Size Selection Pill */
+        .size-btn {
+            border: 1.5px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+        .size-btn.active, .size-btn:hover {
+            background-color: #0f172a;
+            color: #ffffff;
+            border-color: #0f172a;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f0ff;
+        }
+
+        /* Toast Container */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px) scale(0.9);
+            background: #0f172a;
+            border: 1px solid #00f0ff;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            border-radius: 999px;
+            font-weight: 700;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.3);
+            opacity: 0;
+            transition: all 0.4s var(--ease-out-back);
+            z-index: 10000;
+            pointer-events: none;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0) scale(1);
+            opacity: 1;
+        }
+    </style>
 </head>
-<body>
- 
-  <div class="card">
-    <div class="eyebrow">Stride & Co.</div>
-    <h1>Shoes built for <em>every mile</em></h1>
-    <p class="sub">Running, casual, and everyday sneakers — crafted for comfort and made to last. Check out this week's featured deal.</p>
-    <button class="offer-btn" id="offerBtn">Click here for offer</button>
-  </div>
- 
-  <div class="overlay" id="overlay">
-    <div class="modal">
-      <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
-      <div class="modal-body">
-        <img class="shoe-art" src="images/42-best-asics-running-shoes-15275081-main.webp" alt="Running shoes lineup" style="border-radius:6px; object-fit:cover; height:160px;">
-        <span class="badge">Weekend sale</span>
-        <h2>Running Sneaker Bundle</h2>
-        <div class="package-name">Trail Runner + 2 Pairs of Sport Socks</div>
-        <div class="price">$59<span>/pair</span></div>
-        <div class="strike">$99/pair</div>
-        <ul class="features">
-          <li>Breathable mesh upper, lightweight sole</li>
-          <li>Free pair of performance socks included</li>
-          <li>Available in 6 colors, sizes 5–13</li>
-          <li>Free shipping &amp; 30-day returns</li>
-          <li>Limited stock — while sizes last</li>
-        </ul>
-        <button class="claim-btn">Claim this offer</button>
-        <div class="fine">Offer ends Sunday midnight.</div>
-      </div>
+<body class="relative">
+
+    <!-- Ambient Grid Effect -->
+    <div class="speed-grid"></div>
+
+    <!-- MAIN HEADER -->
+    <header class="relative z-10 border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-xl sticky top-0">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-blue-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-cyan-500/20">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <div>
+                    <span class="heading-font text-3xl font-bold tracking-wider text-white block leading-none">SANCTIFY</span>
+                    <span class="text-[10px] uppercase font-bold tracking-widest text-cyan-400 block -mt-1">Athletics Pro</span>
+                </div>
+            </div>
+
+            <button id="openModalBtn" class="btn-gradient text-slate-950 font-black text-sm px-6 py-3 rounded-full flex items-center gap-2 shadow-lg shadow-cyan-500/20 hover:scale-105 transition-transform">
+                <i class="fa-solid fa-fire text-amber-300"></i>
+                <span>SPECIAL SHOE DEAL ⚡</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="relative z-10 max-w-7xl mx-auto px-6 py-12 space-y-16">
+
+        <!-- Hero Banner -->
+        <section class="glass-card p-8 md:p-12 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="space-y-4 max-w-2xl">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-widest">
+                    <i class="fa-solid fa-trophy"></i> Official Marathon Series
+                </div>
+                <h1 class="heading-font text-5xl sm:text-7xl font-bold leading-none text-white">
+                    ENGINEERED FOR <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-blue-400 to-orange-500">MAXIMUM SPEED</span>
+                </h1>
+                <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+                    Discover our highest-tier long-distance road running lineup featuring ultralight FlyteFoam cushioning, carbon propel plates, and high-traction rubber outsoles.
+                </p>
+                <div class="pt-2 flex flex-wrap gap-4">
+                    <button onclick="openModal()" class="px-8 py-3.5 rounded-xl bg-cyan-400 text-slate-950 font-extrabold text-sm hover:bg-cyan-300 transition-colors flex items-center gap-2 shadow-lg shadow-cyan-400/20">
+                        <i class="fa-solid fa-tag"></i> Claim 40% Off Marathon Pack
+                    </button>
+                </div>
+            </div>
+
+            <!-- Featured Shoe Preview Box -->
+            <div class="w-full md:w-96 aspect-video md:aspect-square rounded-2xl overflow-hidden relative group border border-slate-700/60 shadow-2xl">
+                <img id="heroShoeImg" src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1000&q=80" alt="High Performance Running Shoes" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" onerror="handleImageError(this, 'High-Perf Road Racer')">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80"></div>
+                <div class="absolute bottom-4 left-4 right-4 flex justify-between items-end">
+                    <div>
+                        <span class="text-xs uppercase text-cyan-400 font-bold">Pro Edition</span>
+                        <h3 class="text-lg font-bold text-white">Metaspeed Carbon X</h3>
+                    </div>
+                    <span class="text-xl font-extrabold text-amber-400">₹8,999</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- STORE GRID SECTION -->
+        <section class="space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <h2 class="heading-font text-4xl text-white font-bold tracking-wide">PRO RUNNING LINEUP</h2>
+                    <p class="text-slate-400 text-sm">Tested by professional runners across marathon & road trail courses.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Filter:</span>
+                    <button class="px-4 py-2 rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-bold">All Shoes</button>
+                    <button class="px-4 py-2 rounded-lg bg-slate-800/60 text-slate-400 text-xs font-bold hover:text-white transition-colors">Marathon</button>
+                    <button class="px-4 py-2 rounded-lg bg-slate-800/60 text-slate-400 text-xs font-bold hover:text-white transition-colors">Road Race</button>
+                </div>
+            </div>
+
+            <!-- Shoes Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+                <!-- Shoe Card 1 -->
+                <div class="glass-card overflow-hidden group">
+                    <div class="aspect-[4/3] relative overflow-hidden bg-slate-900">
+                        <img src="https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&w=800&q=80" alt="Asics Style Cyan Racer" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="handleImageError(this, 'Cyan Speed Racer')">
+                        <span class="absolute top-3 left-3 bg-cyan-500 text-slate-950 font-black text-[10px] uppercase px-2.5 py-1 rounded-full">Carbon Plate</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors">Gel-Nimbus Speed Blue</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Engineered mesh upper with maximum energy return foam sole.</p>
+                        <div class="flex items-center justify-between pt-2">
+                            <div>
+                                <span class="text-xs text-slate-500 line-through">₹12,999</span>
+                                <span class="text-lg font-bold text-cyan-400 block">₹7,799</span>
+                            </div>
+                            <button onclick="openModal()" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-white font-bold text-xs transition-all">
+                                Quick Offer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shoe Card 2 -->
+                <div class="glass-card overflow-hidden group">
+                    <div class="aspect-[4/3] relative overflow-hidden bg-slate-900">
+                        <img src="https://images.unsplash.com/photo-1584735935682-2f2b69dff9d2?auto=format&fit=crop&w=800&q=80" alt="Asics Metaspeed Neon Green" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="handleImageError(this, 'Neon Metaspeed')">
+                        <span class="absolute top-3 left-3 bg-amber-500 text-slate-950 font-black text-[10px] uppercase px-2.5 py-1 rounded-full">Top Rated</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors">Sonic Glow Lime Nitro</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Ultra-lightweight racer optimized for fast tempo runs.</p>
+                        <div class="flex items-center justify-between pt-2">
+                            <div>
+                                <span class="text-xs text-slate-500 line-through">₹14,999</span>
+                                <span class="text-lg font-bold text-cyan-400 block">₹8,999</span>
+                            </div>
+                            <button onclick="openModal()" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-white font-bold text-xs transition-all">
+                                Quick Offer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shoe Card 3 -->
+                <div class="glass-card overflow-hidden group">
+                    <div class="aspect-[4/3] relative overflow-hidden bg-slate-900">
+                        <img src="https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=800&q=80" alt="Asics Black Orange Marathon" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="handleImageError(this, 'Marathon Black Orange')">
+                        <span class="absolute top-3 left-3 bg-orange-500 text-white font-black text-[10px] uppercase px-2.5 py-1 rounded-full">HOT DEAL</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors">Hyperspeed Black Ember</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Superior heel stack height for full 42km endurance comfort.</p>
+                        <div class="flex items-center justify-between pt-2">
+                            <div>
+                                <span class="text-xs text-slate-500 line-through">₹11,499</span>
+                                <span class="text-lg font-bold text-cyan-400 block">₹6,899</span>
+                            </div>
+                            <button onclick="openModal()" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-white font-bold text-xs transition-all">
+                                Quick Offer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shoe Card 4 -->
+                <div class="glass-card overflow-hidden group">
+                    <div class="aspect-[4/3] relative overflow-hidden bg-slate-900">
+                        <img src="https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&w=800&q=80" alt="Asics Electric Sky Blue" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" onerror="handleImageError(this, 'Sky Blue Glide')">
+                        <span class="absolute top-3 left-3 bg-blue-500 text-white font-black text-[10px] uppercase px-2.5 py-1 rounded-full">New Release</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <h3 class="font-bold text-lg text-white group-hover:text-cyan-400 transition-colors">GlideRide Electric Azure</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Curved sole geometry designed to reduce ankle joint strain.</p>
+                        <div class="flex items-center justify-between pt-2">
+                            <div>
+                                <span class="text-xs text-slate-500 line-through">₹13,500</span>
+                                <span class="text-lg font-bold text-cyan-400 block">₹8,100</span>
+                            </div>
+                            <button onclick="openModal()" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-white font-bold text-xs transition-all">
+                                Quick Offer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="relative z-10 border-t border-slate-800/80 bg-slate-950/80 py-8 text-center text-xs text-slate-500">
+        <p>© 2026 Sanctify Athletics. All rights reserved. High Performance Road Running Gear.</p>
+    </footer>
+
+    <!-- ==========================================================================
+         PROMOTIONAL SPLIT-CARD MODAL (MATCHING REFERENCE STRUCTURE)
+         ========================================================================== -->
+    <div id="promoModal" class="modal-overlay" aria-hidden="true">
+        <div class="modal-card-wrapper">
+            <div class="grid grid-cols-1 md:grid-cols-2 bg-white text-slate-900 rounded-[30px] overflow-hidden relative shadow-2xl">
+
+                <!-- Close Button ('✕') -->
+                <button id="closeModalBtn" class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-slate-100/80 hover:bg-slate-200 text-slate-700 hover:text-slate-950 flex items-center justify-center text-sm font-bold transition-all shadow-md">
+                    ✕
+                </button>
+
+                <!-- LEFT SIDE: RUNNING SHOES HERO IMAGE -->
+                <div class="relative bg-slate-900 min-h-[260px] md:min-h-[460px] flex items-center justify-center overflow-hidden group">
+                    <img id="modalShoeImg" 
+                         src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=1200&q=80" 
+                         alt="ASICS High Performance Running Shoes" 
+                         class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+                         onerror="handleImageError(this, 'ASICS Running Shoes Lineup')">
+                    
+                    <!-- Gradient Vignette -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-black/20"></div>
+
+                    <!-- Badge overlay on left image -->
+                    <div class="absolute bottom-6 left-6 right-6">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500 text-slate-950 font-black text-xs uppercase tracking-wider shadow-lg">
+                            <i class="fa-solid fa-feather-pointed"></i> ULTRA LIGHTWEIGHT
+                        </span>
+                        <p class="text-white font-extrabold text-xl sm:text-2xl mt-2 drop-shadow-md">
+                            42-Km Marathon Series
+                        </p>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE: OFFER DETAILS & CALL TO ACTION -->
+                <div class="p-6 sm:p-8 md:p-10 flex flex-col justify-between bg-gradient-to-b from-slate-50 to-white">
+                    <div class="space-y-4">
+                        <!-- Top Offer Badge -->
+                        <div>
+                            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-600 font-extrabold text-xs uppercase tracking-wider shadow-sm">
+                                <i class="fa-solid fa-fire text-rose-500"></i> FLASH SALE - 40% OFF
+                            </span>
+                        </div>
+
+                        <!-- Main Heading & Price -->
+                        <div class="space-y-1">
+                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                                Step Into Peak Performance
+                            </h2>
+                            <p class="text-rose-600 font-black text-xl sm:text-2xl">
+                                Any Pair Starting at ₹4,999
+                            </p>
+                        </div>
+
+                        <!-- Description -->
+                        <p class="text-slate-600 text-xs sm:text-sm leading-relaxed">
+                            Upgrade your daily running experience with our premium marathon-tested road running series. Maximum energy return, breathable mesh, and superior stability.
+                        </p>
+
+                        <!-- Feature Bullet Points with Icons -->
+                        <div class="space-y-2.5 pt-1">
+                            <div class="flex items-center gap-3 text-xs sm:text-sm font-semibold text-slate-700">
+                                <div class="w-7 h-7 rounded-full bg-cyan-100 text-cyan-700 flex items-center justify-center shrink-0">
+                                    ⚡
+                                </div>
+                                <span>FlightFoam™ Propel Energy Cushioning</span>
+                            </div>
+
+                            <div class="flex items-center gap-3 text-xs sm:text-sm font-semibold text-slate-700">
+                                <div class="w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                                    🏃
+                                </div>
+                                <span>Breathable Jacquard Engineered Mesh</span>
+                            </div>
+
+                            <div class="flex items-center gap-3 text-xs sm:text-sm font-semibold text-slate-700">
+                                <div class="w-7 h-7 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center shrink-0">
+                                    🎯
+                                </div>
+                                <span>Carbon Fiber Speed Assist Plate</span>
+                            </div>
+
+                            <div class="flex items-center gap-3 text-xs sm:text-sm font-semibold text-slate-700">
+                                <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                                    🚚
+                                </div>
+                                <span>Free Express Delivery & Easy Returns</span>
+                            </div>
+                        </div>
+
+                        <!-- Size Selector inside Modal -->
+                        <div class="pt-2">
+                            <label class="block text-xs font-extrabold uppercase text-slate-500 mb-2 tracking-wider">Select Size (US):</label>
+                            <div class="flex items-center gap-2" id="sizeSelector">
+                                <button onclick="selectSize(this)" class="size-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700">7</button>
+                                <button onclick="selectSize(this)" class="size-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700">8</button>
+                                <button onclick="selectSize(this)" class="size-btn active px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700">9</button>
+                                <button onclick="selectSize(this)" class="size-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700">10</button>
+                                <button onclick="selectSize(this)" class="size-btn px-3 py-1.5 rounded-lg text-xs font-bold text-slate-700">11</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Button -->
+                    <div class="pt-6">
+                        <button id="claimBtn" class="w-full btn-gradient py-4 rounded-xl text-white font-extrabold text-sm sm:text-base tracking-wide shadow-xl flex items-center justify-center gap-2">
+                            <span>Claim Your Pair Now</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <p class="text-[11px] text-slate-400 text-center mt-2 font-medium">Limited stock available • Ends midnight</p>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
     </div>
-  </div>
- 
-<script>
-  const overlay = document.getElementById('overlay');
-  const openBtn = document.getElementById('offerBtn');
-  const closeBtn = document.getElementById('closeBtn');
- 
-  function openModal(){
-    overlay.classList.add('open');
-    document.addEventListener('keydown', onKeydown);
-  }
-  function closeModal(){
-    overlay.classList.remove('open');
-    document.removeEventListener('keydown', onKeydown);
-  }
-  function onKeydown(e){
-    if(e.key === 'Escape') closeModal();
-  }
- 
-  openBtn.addEventListener('click', openModal);
-  closeBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', (e) => {
-    if(e.target === overlay) closeModal();
-  });
-</script>
- 
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-circle-check text-cyan-400 mr-2"></i>
+        <span>Offer Claimed! Redirecting to checkout...</span>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Modal DOM Elements
+        const promoModal = document.getElementById('promoModal');
+        const openModalBtn = document.getElementById('openModalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const claimBtn = document.getElementById('claimBtn');
+        const toast = document.getElementById('toast');
+
+        // SVG Fallback Generator for broken image links
+        function handleImageError(imgEl, title) {
+            const encodedTitle = encodeURIComponent(title || "Sanctify Running Shoes");
+            const svgURI = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><rect width="100%" height="100%" fill="%230f172a"/><circle cx="400" cy="300" r="220" fill="%2300f0ff" opacity="0.15"/><path d="M220 380 Q 320 220 580 260 L 520 400 Z" fill="%230066ff" opacity="0.8"/><path d="M250 370 Q 340 250 560 300 L 500 410 Z" fill="%23ff5500" opacity="0.85"/><text x="50%" y="82%" font-family="sans-serif" font-weight="900" font-size="28" fill="%23ffffff" text-anchor="middle">${encodedTitle}</text></svg>`;
+            imgEl.onerror = null; // Prevent loop
+            imgEl.src = svgURI;
+        }
+
+        // Open Modal Function
+        function openModal() {
+            promoModal.classList.add('active');
+            promoModal.setAttribute('aria-hidden', 'false');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+
+        // Close Modal Function
+        function closeModal() {
+            promoModal.classList.remove('active');
+            promoModal.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+        }
+
+        // Size Selector Toggle
+        function selectSize(btn) {
+            const buttons = document.querySelectorAll('#sizeSelector .size-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // Event Listeners
+        openModalBtn.addEventListener('click', openModal);
+        closeModalBtn.addEventListener('click', closeModal);
+
+        // Backdrop click to close
+        promoModal.addEventListener('click', (e) => {
+            if (e.target === promoModal) {
+                closeModal();
+            }
+        });
+
+        // Escape Key press to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && promoModal.classList.contains('active')) {
+                closeModal();
+            }
+        });
+
+        // Claim Button Click Handler
+        claimBtn.addEventListener('click', () => {
+            closeModal();
+            // Show Toast Notification
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3500);
+        });
+
+        // Open Modal Automatically on load after short delay
+        window.addEventListener('load', () => {
+            setTimeout(openModal, 1200);
+        });
+    </script>
 </body>
 </html>
- 
